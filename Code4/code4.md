@@ -16,6 +16,10 @@
     }];
     NSBlockOperation *op2 =[NSBlockOperation blockOperationWithBlock:^{
         NSLog(@"下载图片2----%@",[NSThread currentThread]);
-    }];
+    }];  
+     [queue addOperation:op1];
+    [queue addOperation:op2];  
+    // op2 依赖 op1执行
+    [op2 addDependency:op1];
 
 ```
