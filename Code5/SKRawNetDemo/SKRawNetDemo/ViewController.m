@@ -20,7 +20,12 @@
 #pragma mark - 懒加载
 - (NSURLSession *)session{
 	if (!_session) {
-		_session = [NSURLSession sharedSession];
+		// 配置
+		NSURLSessionConfiguration *cfg = [NSURLSessionConfiguration defaultSessionConfiguration];
+		cfg.timeoutIntervalForRequest = 10;
+		// 是否允许使用手机自带网络
+		cfg.allowsCellularAccess = YES;
+		_session = [NSURLSession sessionWithConfiguration:cfg];
 	}
 	return _session;
 
@@ -36,6 +41,13 @@
 	
 	还是有必要总结一下用NSURLSession 进行网络请求的必要性
 	温故而知❤️
+	
+	NSURLSessionTask  父类 又分为
+	1> NSURLSessionDataTask  ---> NSURLSessionUploadTask
+	
+	2> NSURLSessionDownloadTask 
+	
+
 	
 */
 
@@ -137,7 +149,33 @@
 	
 }
 
-
+/*--------------MARK4: PUT 方式---------------*/
+- (void)letPutTypeOne{
+	
+	NSDictionary *userInfo = @{
+		@"username":@"alex",
+		@"password":@"123456",
+	};
+	
+	NSURL *url = [NSURL URLWithString:@""];
+	NSMutableURLRequest *req  = [NSMutableURLRequest requestWithURL:url];
+	[req setHTTPMethod:@"PUT"];
+	
+	NSData *bodyData = [NSJSONSerialization dataWithJSONObject:userInfo options:NSJSONWritingPrettyPrinted error:nil];
+	// 上传任务
+	NSURLSessionUploadTask *task = [self.session uploadTaskWithRequest:req fromData:bodyData completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+		if (error) {
+			NSLog(@"%@",error.description);
+		}else{
+			NSLog(@"upload success");
+		}
+	}];
+	
+	[task resume];
+	
+	
+	
+}
 
 
 
